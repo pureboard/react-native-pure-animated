@@ -1,3 +1,8 @@
-export function multiply(a: number, b: number): Promise<number> {
-  return Promise.resolve(a * b);
-}
+export { PureTransition, type Transition } from './PureTransition';
+export {
+  Fade,
+  FadeSlideDown,
+  FadeSlideUp,
+  SlideDown,
+  SlideUp,
+} from './transition/Transition';

@@ -10,13 +10,13 @@ import {
 } from 'react-native-pure-transition';
 import type { TransitionType } from '../../src/PureTransition';
 
-const transitionType = [
+const transitionType: TransitionType[] = [
   'fade',
   'slide-up',
   'slide-down',
   'fade-slide-up',
   'fade-slide-down',
-] as const;
+];
 
 const TransitionItemMap = {
   'fade': Fade,
@@ -37,36 +37,30 @@ const Item = ({
 }) => {
   const TransitionItem = TransitionItemMap[transitionType];
   return (
-    <View
-      style={{
-        height: 50,
-        justifyContent: 'center',
-        alignItems: 'center',
-      }}
-    >
+    <TouchableOpacity style={styles.itemContainer} onPress={onPress}>
       <PureTransition
         entering={TransitionItem.duration(1000)}
         isVisible={isVisible}
-        style={{ paddingVertical: 12 }}
-        exiting={TransitionItem.duration(100).delay(500)}
-        slideOffset={100}
+        exiting={TransitionItem.duration(1000)}
+        slideOffset={50}
       >
-        <TouchableOpacity onPress={onPress}>
-          <Text style={{ fontSize: 18 }}>{transitionType}</Text>
-        </TouchableOpacity>
+        <Text style={styles.itemText}>{transitionType}</Text>
       </PureTransition>
-    </View>
+    </TouchableOpacity>
   );
 };
 
 export default function App() {
-  const [transitionItem, setTransitionItem] = useState<TransitionType | null>(
-    null
-  );
+  const [transitionItem, setTransitionItem] =
+    useState<TransitionType[]>(transitionType);
 
-  const startTransition = (type: TransitionType) => {
-    setTransitionItem(type);
-    setTimeout(() => setTransitionItem(null), 1000);
+  const toggleTransition = (type: TransitionType) => {
+    setTransitionItem((prev) => {
+      if (prev.includes(type)) {
+        return prev.filter((it) => it !== type);
+      }
+      return [...prev, type];
+    });
   };
 
   return (
@@ -75,8 +69,8 @@ export default function App() {
         <Item
           key={index}
           transitionType={it}
-          onPress={() => startTransition(it)}
-          isVisible={transitionItem !== it}
+          onPress={() => toggleTransition(it)}
+          isVisible={transitionItem.includes(it)}
         />
       ))}
     </View>
@@ -88,5 +82,18 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  itemContainer: {
+    height: 50,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 1,
+    marginVertical: 12,
+    width: '80%',
+    borderRadius: 8,
+    paddingVertical: 12,
+  },
+  itemText: {
+    fontSize: 18,
   },
 });

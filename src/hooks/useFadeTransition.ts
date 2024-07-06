@@ -26,8 +26,14 @@ export const useFadeTransition = ({
   const isFadeEntering = isFadeTransition(entering);
   const isFadeExiting = isFadeTransition(exiting);
 
+  const exitingTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
+
   const enterFade = () => {
     currentAnimation.current?.stop();
+
+    if (exitingTimeout.current) {
+      clearTimeout(exitingTimeout.current);
+    }
 
     const animation = Animated.timing(fadeAnim, {
       toValue: 1,
@@ -58,14 +64,18 @@ export const useFadeTransition = ({
     currentAnimation.current = animation;
 
     if (isFadeExiting) {
-      animation.start(() => {
+      animation.start(({ finished }) => {
+        if (!finished) {
+          return;
+        }
+
         hide();
         currentAnimation.current = null;
       });
     } else {
       fadeAnim.setValue(0);
       currentAnimation.current = null;
-      setTimeout(hide, exitingDuration);
+      exitingTimeout.current = setTimeout(hide, exitingDuration);
     }
   };
 

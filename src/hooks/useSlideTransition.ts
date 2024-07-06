@@ -1,4 +1,4 @@
-import React from 'react';
+import { useRef } from 'react';
 import { Animated } from 'react-native';
 import { type TransitionType } from '../PureTransition';
 import { type PureTransitionHookParams } from './usePureTransition';
@@ -24,17 +24,20 @@ export const useSlideTransition = ({
   show,
   slideOffset = 1000,
 }: PureTransitionHookParams) => {
-  const positionY = React.useRef(new Animated.Value(0)).current;
+  const positionY = useRef(new Animated.Value(0)).current;
 
   const isSlideEntering = isSlideTransition(entering);
   const isSlideExiting = isSlideTransition(exiting);
 
-  const currentAnimation = React.useRef<Animated.CompositeAnimation | null>(
-    null
-  );
+  const currentAnimation = useRef<Animated.CompositeAnimation | null>(null);
+
+  const exitingTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const enterSlide = () => {
     currentAnimation.current?.stop();
+    if (exitingTimeout.current) {
+      clearTimeout(exitingTimeout.current);
+    }
     const animation = Animated.timing(positionY, {
       toValue: 1,
       duration: enteringDuration,
@@ -64,14 +67,17 @@ export const useSlideTransition = ({
     currentAnimation.current = animation;
 
     if (isSlideExiting) {
-      animation.start(() => {
+      animation.start(({ finished }) => {
+        if (!finished) {
+          return;
+        }
         hide();
         currentAnimation.current = null;
       });
     } else {
       positionY.setValue(0);
       currentAnimation.current = null;
-      setTimeout(hide, exitingDuration);
+      exitingTimeout.current = setTimeout(hide, exitingDuration);
     }
   };
 

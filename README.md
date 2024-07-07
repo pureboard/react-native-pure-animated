@@ -1,6 +1,6 @@
 # react-native-pure-transition
 
-react native pure transtion
+react native pure transition
 
 ## Installation
 
@@ -10,7 +10,6 @@ npm install react-native-pure-transition
 
 ## Usage
 
-
 ```js
 import { multiply } from 'react-native-pure-transition';
 
@@ -18,7 +17,6 @@ import { multiply } from 'react-native-pure-transition';
 
 const result = await multiply(3, 7);
 ```
-
 
 ## Contributing
 

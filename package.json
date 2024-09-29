@@ -1,6 +1,6 @@
 {
   "name": "@pureboard/react-native-pure-transition",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "react native pure transtion",
   "source": "./src/index.tsx",
   "main": "./lib/commonjs/index.cjs",

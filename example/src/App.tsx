@@ -7,7 +7,7 @@ import {
   PureTransition,
   SlideDown,
   SlideUp,
-} from 'react-native-pure-transition';
+} from '@pureboard/react-native-pure-transition';
 import type { TransitionType } from '../../src/PureTransition';
 
 const transitionType: TransitionType[] = [
